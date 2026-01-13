@@ -20,6 +20,8 @@ import type {
   UpdateChildMutationVariables,
   DeleteChildMutation,
   DeleteChildMutationVariables,
+  UpdateMeMutation,
+  UpdateMeMutationVariables,
 } from "@/generated/graphql";
 
 // === Query Documents ===
@@ -237,6 +239,22 @@ const DELETE_CHILD_MUTATION = gql`
   }
 `;
 
+const UPDATE_ME_MUTATION = gql`
+  mutation UpdateMe($input: UpdateMeInput!) {
+    updateMe(input: $input) {
+      success
+      errorCode
+      errorMessage
+      user {
+        id
+        name
+        phone
+        email
+      }
+    }
+  }
+`;
+
 // === Query Hooks ===
 
 export function useMeQuery(
@@ -406,6 +424,25 @@ export function useDeleteChildMutation(
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["me"] });
       queryClient.invalidateQueries({ queryKey: ["myChildren"] });
+    },
+    ...options,
+  });
+}
+
+export function useUpdateMeMutation(
+  options?: Omit<
+    UseMutationOptions<UpdateMeMutation, Error, UpdateMeMutationVariables>,
+    "mutationFn"
+  >
+) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (variables: UpdateMeMutationVariables) => {
+      const client = await createAuthGraphQLClient();
+      return client.request<UpdateMeMutation>(UPDATE_ME_MUTATION, variables);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["me"] });
     },
     ...options,
   });

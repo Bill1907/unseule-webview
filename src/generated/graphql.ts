@@ -16,6 +16,18 @@ export type Scalars = {
   DateTime: { input: string; output: string; }
 };
 
+export type ChangePasswordInput = {
+  currentPassword: Scalars['String']['input'];
+  newPassword: Scalars['String']['input'];
+};
+
+export type ChangePasswordPayload = {
+  __typename?: 'ChangePasswordPayload';
+  errorCode?: Maybe<Scalars['String']['output']>;
+  errorMessage?: Maybe<Scalars['String']['output']>;
+  success: Scalars['Boolean']['output'];
+};
+
 export type ChildType = {
   __typename?: 'ChildType';
   age: Scalars['Int']['output'];
@@ -50,6 +62,17 @@ export type CreateChildPayload = {
   success: Scalars['Boolean']['output'];
 };
 
+export type DeactivateAccountInput = {
+  password: Scalars['String']['input'];
+};
+
+export type DeactivateAccountPayload = {
+  __typename?: 'DeactivateAccountPayload';
+  errorCode?: Maybe<Scalars['String']['output']>;
+  errorMessage?: Maybe<Scalars['String']['output']>;
+  success: Scalars['Boolean']['output'];
+};
+
 export type DeleteChildPayload = {
   __typename?: 'DeleteChildPayload';
   errorCode?: Maybe<Scalars['String']['output']>;
@@ -75,17 +98,30 @@ export type DeviceType = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  changePassword: ChangePasswordPayload;
   createChild: CreateChildPayload;
+  deactivateAccount: DeactivateAccountPayload;
   deleteChild: DeleteChildPayload;
   echo: Scalars['String']['output'];
   registerDevice: RegisterDevicePayload;
   unpairDevice: UnpairDevicePayload;
   updateChild: UpdateChildPayload;
+  updateMe: UpdateMePayload;
+};
+
+
+export type MutationChangePasswordArgs = {
+  input: ChangePasswordInput;
 };
 
 
 export type MutationCreateChildArgs = {
   input: CreateChildInput;
+};
+
+
+export type MutationDeactivateAccountArgs = {
+  input: DeactivateAccountInput;
 };
 
 
@@ -112,6 +148,11 @@ export type MutationUnpairDeviceArgs = {
 export type MutationUpdateChildArgs = {
   childId: Scalars['String']['input'];
   input: UpdateChildInput;
+};
+
+
+export type MutationUpdateMeArgs = {
+  input: UpdateMeInput;
 };
 
 export const PlanType = {
@@ -200,6 +241,19 @@ export type UpdateChildPayload = {
   success: Scalars['Boolean']['output'];
 };
 
+export type UpdateMeInput = {
+  name?: InputMaybe<Scalars['String']['input']>;
+  phone?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type UpdateMePayload = {
+  __typename?: 'UpdateMePayload';
+  errorCode?: Maybe<Scalars['String']['output']>;
+  errorMessage?: Maybe<Scalars['String']['output']>;
+  success: Scalars['Boolean']['output'];
+  user?: Maybe<UserType>;
+};
+
 export type UserType = {
   __typename?: 'UserType';
   children: Array<ChildType>;
@@ -249,6 +303,13 @@ export type UnpairDeviceMutationVariables = Exact<{
 
 
 export type UnpairDeviceMutation = { __typename?: 'Mutation', unpairDevice: { __typename?: 'UnpairDevicePayload', success: boolean, errorCode?: string | null, errorMessage?: string | null } };
+
+export type UpdateMeMutationVariables = Exact<{
+  input: UpdateMeInput;
+}>;
+
+
+export type UpdateMeMutation = { __typename?: 'Mutation', updateMe: { __typename?: 'UpdateMePayload', success: boolean, errorCode?: string | null, errorMessage?: string | null, user?: { __typename?: 'UserType', id: string, name: string, phone?: string | null, email: string } | null } };
 
 export type MyDevicesQueryVariables = Exact<{ [key: string]: never; }>;
 

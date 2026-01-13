@@ -130,11 +130,13 @@ function ChildDetailPage() {
             <Pencil className="size-4" />
           </Button>
           <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button variant="outline" size="icon">
-                <Trash2 className="size-4 text-destructive" />
-              </Button>
-            </AlertDialogTrigger>
+            <AlertDialogTrigger
+              render={
+                <Button variant="outline" size="icon">
+                  <Trash2 className="size-4 text-destructive" />
+                </Button>
+              }
+            />
             <AlertDialogContent>
               <AlertDialogHeader>
                 <AlertDialogTitle>아이 정보 삭제</AlertDialogTitle>

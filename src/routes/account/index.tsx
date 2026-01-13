@@ -64,7 +64,10 @@ function AccountPage() {
   }
 
   const user = data?.me;
-  if (!user) return null;
+  if (!user) {
+    navigate({ to: "/onboarding" });
+    return null;
+  }
 
   return (
     <main className="flex-1 p-4 space-y-4">

@@ -1,0 +1,37 @@
+mutation CreateChild($input: CreateChildInput!) {
+  createChild(input: $input) {
+    success
+    errorCode
+    errorMessage
+    child {
+      id
+      name
+      birthDate
+      gender
+      age
+    }
+  }
+}
+
+mutation UpdateChild($childId: String!, $input: UpdateChildInput!) {
+  updateChild(childId: $childId, input: $input) {
+    success
+    errorCode
+    errorMessage
+    child {
+      id
+      name
+      birthDate
+      gender
+      age
+    }
+  }
+}
+
+mutation DeleteChild($childId: String!) {
+  deleteChild(childId: $childId) {
+    success
+    errorCode
+    errorMessage
+  }
+}

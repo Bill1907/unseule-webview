@@ -1,0 +1,21 @@
+mutation RegisterDevice($input: RegisterDeviceInput!) {
+  registerDevice(input: $input) {
+    success
+    errorCode
+    errorMessage
+    device {
+      id
+      serialNumber
+      deviceType
+      connectionStatus
+    }
+  }
+}
+
+mutation UnpairDevice($deviceId: String!) {
+  unpairDevice(deviceId: $deviceId) {
+    success
+    errorCode
+    errorMessage
+  }
+}

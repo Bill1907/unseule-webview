@@ -1,0 +1,33 @@
+query MyDevices {
+  myDevices {
+    id
+    serialNumber
+    deviceType
+    firmwareVersion
+    batteryLevel
+    connectionStatus
+    isActive
+    pairedAt
+    childId
+    childName
+    createdAt
+    updatedAt
+  }
+}
+
+query Device($id: String!) {
+  device(id: $id) {
+    id
+    serialNumber
+    deviceType
+    firmwareVersion
+    batteryLevel
+    connectionStatus
+    isActive
+    pairedAt
+    childId
+    childName
+    createdAt
+    updatedAt
+  }
+}

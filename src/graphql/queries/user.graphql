@@ -1,0 +1,96 @@
+query Me {
+  me {
+    id
+    email
+    name
+    phone
+    isActive
+    emailVerified
+    createdAt
+    updatedAt
+    children {
+      id
+      name
+      birthDate
+      gender
+      age
+      isActive
+      device {
+        id
+        serialNumber
+        deviceType
+        connectionStatus
+        batteryLevel
+      }
+    }
+    subscription {
+      id
+      planType
+      status
+      startedAt
+      expiresAt
+      autoRenew
+      isExpired
+    }
+  }
+}
+
+query MyChildren {
+  myChildren {
+    id
+    name
+    birthDate
+    gender
+    age
+    isActive
+    createdAt
+    updatedAt
+    device {
+      id
+      serialNumber
+      deviceType
+      firmwareVersion
+      batteryLevel
+      connectionStatus
+      isActive
+      pairedAt
+    }
+  }
+}
+
+query Child($id: String!) {
+  child(id: $id) {
+    id
+    name
+    birthDate
+    gender
+    age
+    isActive
+    createdAt
+    updatedAt
+    device {
+      id
+      serialNumber
+      deviceType
+      firmwareVersion
+      batteryLevel
+      connectionStatus
+      isActive
+      pairedAt
+    }
+  }
+}
+
+query MySubscription {
+  mySubscription {
+    id
+    planType
+    status
+    startedAt
+    expiresAt
+    autoRenew
+    isExpired
+    createdAt
+    updatedAt
+  }
+}

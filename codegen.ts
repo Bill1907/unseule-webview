@@ -2,23 +2,17 @@ import type { CodegenConfig } from "@graphql-codegen/cli";
 
 const config: CodegenConfig = {
   schema: process.env.VITE_GRAPHQL_URL || "https://api.uneseule.me/graphql",
-  documents: ["src/**/*.{ts,tsx}", "!src/generated/**/*"],
+  documents: ["src/graphql/**/*.graphql"],
   ignoreNoDocuments: true,
   generates: {
     "./src/generated/graphql.ts": {
-      plugins: [
-        "typescript",
-        "typescript-operations",
-        "typescript-react-query",
-      ],
+      plugins: ["typescript", "typescript-operations"],
       config: {
-        fetcher: {
-          func: "@/lib/graphql/client#graphqlClient.request",
-          isReactHook: false,
+        enumsAsConst: true,
+        scalars: {
+          Date: "string",
+          DateTime: "string",
         },
-        exposeQueryKeys: true,
-        exposeFetcher: true,
-        addInfiniteQuery: true,
       },
     },
   },

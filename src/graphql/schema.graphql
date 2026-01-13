@@ -1,0 +1,113 @@
+type ChildType {
+  id: String!
+  name: String!
+  birthDate: Date!
+  gender: String
+  age: Int!
+  isActive: Boolean!
+  createdAt: DateTime!
+  updatedAt: DateTime
+  device: DeviceType
+}
+
+enum ConnectionStatus {
+  ONLINE
+  OFFLINE
+  SLEEP
+}
+
+"""Date (isoformat)"""
+scalar Date
+
+"""Date with time (isoformat)"""
+scalar DateTime
+
+type DeviceType {
+  id: String!
+  serialNumber: String!
+  deviceType: String!
+  firmwareVersion: String!
+  batteryLevel: Int
+  connectionStatus: ConnectionStatus!
+  isActive: Boolean!
+  pairedAt: DateTime
+  childId: String
+  childName: String
+  createdAt: DateTime!
+  updatedAt: DateTime
+}
+
+type Mutation {
+  registerDevice(input: RegisterDeviceInput!): RegisterDevicePayload!
+  unpairDevice(deviceId: String!): UnpairDevicePayload!
+  echo(message: String!): String!
+}
+
+enum PlanType {
+  FREE
+  BASIC
+  PREMIUM
+}
+
+type Query {
+  me: UserType
+  myChildren: [ChildType!]!
+  child(id: String!): ChildType
+  mySubscription: SubscriptionType
+  myDevices: [DeviceType!]!
+  device(id: String!): DeviceType
+  hello: String!
+}
+
+input RegisterDeviceInput {
+  serialNumber: String!
+  deviceSecret: String!
+  deviceType: String!
+  firmwareVersion: String!
+  childId: String!
+}
+
+type RegisterDevicePayload {
+  success: Boolean!
+  device: DeviceType
+  errorCode: String
+  errorMessage: String
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELLED
+  EXPIRED
+  TRIAL
+}
+
+type SubscriptionType {
+  id: String!
+  planType: PlanType!
+  status: SubscriptionStatus!
+  startedAt: DateTime!
+  expiresAt: DateTime
+  autoRenew: Boolean!
+  isExpired: Boolean!
+  createdAt: DateTime!
+  updatedAt: DateTime
+}
+
+type UnpairDevicePayload {
+  success: Boolean!
+  errorCode: String
+  errorMessage: String
+}
+
+type UserType {
+  id: String!
+  email: String!
+  name: String!
+  phone: String
+  isActive: Boolean!
+  emailVerified: Boolean!
+  createdAt: DateTime!
+  updatedAt: DateTime
+  children: [ChildType!]!
+  subscription: SubscriptionType
+}

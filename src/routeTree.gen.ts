@@ -14,6 +14,9 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AccountIndexRouteImport } from './routes/account/index'
 import { Route as AuthSignUpRouteImport } from './routes/auth/sign-up'
 import { Route as AuthSignInRouteImport } from './routes/auth/sign-in'
+import { Route as AccountChildrenNewRouteImport } from './routes/account/children/new'
+import { Route as AccountChildrenChildIdRouteImport } from './routes/account/children/$childId'
+import { Route as AccountChildrenChildIdEditRouteImport } from './routes/account/children/$childId.edit'
 
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
@@ -40,6 +43,22 @@ const AuthSignInRoute = AuthSignInRouteImport.update({
   path: '/auth/sign-in',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AccountChildrenNewRoute = AccountChildrenNewRouteImport.update({
+  id: '/account/children/new',
+  path: '/account/children/new',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccountChildrenChildIdRoute = AccountChildrenChildIdRouteImport.update({
+  id: '/account/children/$childId',
+  path: '/account/children/$childId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccountChildrenChildIdEditRoute =
+  AccountChildrenChildIdEditRouteImport.update({
+    id: '/edit',
+    path: '/edit',
+    getParentRoute: () => AccountChildrenChildIdRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -47,6 +66,9 @@ export interface FileRoutesByFullPath {
   '/auth/sign-in': typeof AuthSignInRoute
   '/auth/sign-up': typeof AuthSignUpRoute
   '/account': typeof AccountIndexRoute
+  '/account/children/$childId': typeof AccountChildrenChildIdRouteWithChildren
+  '/account/children/new': typeof AccountChildrenNewRoute
+  '/account/children/$childId/edit': typeof AccountChildrenChildIdEditRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -54,6 +76,9 @@ export interface FileRoutesByTo {
   '/auth/sign-in': typeof AuthSignInRoute
   '/auth/sign-up': typeof AuthSignUpRoute
   '/account': typeof AccountIndexRoute
+  '/account/children/$childId': typeof AccountChildrenChildIdRouteWithChildren
+  '/account/children/new': typeof AccountChildrenNewRoute
+  '/account/children/$childId/edit': typeof AccountChildrenChildIdEditRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -62,12 +87,31 @@ export interface FileRoutesById {
   '/auth/sign-in': typeof AuthSignInRoute
   '/auth/sign-up': typeof AuthSignUpRoute
   '/account/': typeof AccountIndexRoute
+  '/account/children/$childId': typeof AccountChildrenChildIdRouteWithChildren
+  '/account/children/new': typeof AccountChildrenNewRoute
+  '/account/children/$childId/edit': typeof AccountChildrenChildIdEditRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/auth/sign-in' | '/auth/sign-up' | '/account'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/auth/sign-in'
+    | '/auth/sign-up'
+    | '/account'
+    | '/account/children/$childId'
+    | '/account/children/new'
+    | '/account/children/$childId/edit'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/auth/sign-in' | '/auth/sign-up' | '/account'
+  to:
+    | '/'
+    | '/about'
+    | '/auth/sign-in'
+    | '/auth/sign-up'
+    | '/account'
+    | '/account/children/$childId'
+    | '/account/children/new'
+    | '/account/children/$childId/edit'
   id:
     | '__root__'
     | '/'
@@ -75,6 +119,9 @@ export interface FileRouteTypes {
     | '/auth/sign-in'
     | '/auth/sign-up'
     | '/account/'
+    | '/account/children/$childId'
+    | '/account/children/new'
+    | '/account/children/$childId/edit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -83,6 +130,8 @@ export interface RootRouteChildren {
   AuthSignInRoute: typeof AuthSignInRoute
   AuthSignUpRoute: typeof AuthSignUpRoute
   AccountIndexRoute: typeof AccountIndexRoute
+  AccountChildrenChildIdRoute: typeof AccountChildrenChildIdRouteWithChildren
+  AccountChildrenNewRoute: typeof AccountChildrenNewRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -122,8 +171,43 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthSignInRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/account/children/new': {
+      id: '/account/children/new'
+      path: '/account/children/new'
+      fullPath: '/account/children/new'
+      preLoaderRoute: typeof AccountChildrenNewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/account/children/$childId': {
+      id: '/account/children/$childId'
+      path: '/account/children/$childId'
+      fullPath: '/account/children/$childId'
+      preLoaderRoute: typeof AccountChildrenChildIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/account/children/$childId/edit': {
+      id: '/account/children/$childId/edit'
+      path: '/edit'
+      fullPath: '/account/children/$childId/edit'
+      preLoaderRoute: typeof AccountChildrenChildIdEditRouteImport
+      parentRoute: typeof AccountChildrenChildIdRoute
+    }
   }
 }
+
+interface AccountChildrenChildIdRouteChildren {
+  AccountChildrenChildIdEditRoute: typeof AccountChildrenChildIdEditRoute
+}
+
+const AccountChildrenChildIdRouteChildren: AccountChildrenChildIdRouteChildren =
+  {
+    AccountChildrenChildIdEditRoute: AccountChildrenChildIdEditRoute,
+  }
+
+const AccountChildrenChildIdRouteWithChildren =
+  AccountChildrenChildIdRoute._addFileChildren(
+    AccountChildrenChildIdRouteChildren,
+  )
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -131,6 +215,8 @@ const rootRouteChildren: RootRouteChildren = {
   AuthSignInRoute: AuthSignInRoute,
   AuthSignUpRoute: AuthSignUpRoute,
   AccountIndexRoute: AccountIndexRoute,
+  AccountChildrenChildIdRoute: AccountChildrenChildIdRouteWithChildren,
+  AccountChildrenNewRoute: AccountChildrenNewRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

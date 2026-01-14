@@ -64,7 +64,10 @@ function AccountPage() {
   }
 
   const user = data?.me;
-  if (!user) return null;
+  if (!user) {
+    navigate({ to: "/onboarding" });
+    return null;
+  }
 
   return (
     <main className="flex-1 p-4 space-y-4">
@@ -83,10 +86,7 @@ function AccountPage() {
         </CardHeader>
         <CardContent>
           <div className="flex gap-2">
-            {user.emailVerified && (
-              <Badge variant="secondary">이메일 인증됨</Badge>
-            )}
-            {user.isActive && <Badge variant="default">활성</Badge>}
+            <Badge variant="default">활성</Badge>
           </div>
         </CardContent>
       </Card>

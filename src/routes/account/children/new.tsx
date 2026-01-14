@@ -121,13 +121,15 @@ function NewChildPage() {
             <div className="space-y-2">
               <Label>성별</Label>
               <Select
-                value={formData.gender}
+                value={formData.gender || undefined}
                 onValueChange={(value) =>
-                  setFormData((prev) => ({ ...prev, gender: value }))
+                  setFormData((prev) => ({ ...prev, gender: value ?? "" }))
                 }
               >
                 <SelectTrigger className="w-full">
-                  <SelectValue placeholder="성별 선택" />
+                  <SelectValue>
+                    {formData.gender ? (formData.gender === "male" ? "남아" : "여아") : "성별 선택"}
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="male">남아</SelectItem>

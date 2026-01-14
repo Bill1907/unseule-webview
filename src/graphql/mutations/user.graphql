@@ -1,0 +1,13 @@
+mutation UpdateMe($input: UpdateMeInput!) {
+  updateMe(input: $input) {
+    success
+    errorCode
+    errorMessage
+    user {
+      id
+      name
+      phone
+      email
+    }
+  }
+}

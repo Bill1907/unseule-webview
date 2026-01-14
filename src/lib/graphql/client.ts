@@ -6,15 +6,14 @@ const GRAPHQL_ENDPOINT =
 
 export const graphqlClient = new GraphQLClient(GRAPHQL_ENDPOINT);
 
-export async function getAuthHeaders(): Promise<HeadersInit> {
-  const session = await authClient.getSession();
-  const token = session.data?.session?.token;
-  return token ? { Authorization: `Bearer ${token}` } : {};
-}
-
 export async function createAuthGraphQLClient() {
-  const headers = await getAuthHeaders();
-  return new GraphQLClient(GRAPHQL_ENDPOINT, { headers });
+  const session = await authClient.getSession();
+  // better-auth 세션 구조: session.data.session.token
+  const token = (session.data?.session as { token?: string })?.token;
+
+  return new GraphQLClient(GRAPHQL_ENDPOINT, {
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+  });
 }
 
 export { gql } from "graphql-request";

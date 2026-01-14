@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as OnboardingIndexRouteImport } from './routes/onboarding/index'
 import { Route as AccountIndexRouteImport } from './routes/account/index'
 import { Route as AuthSignUpRouteImport } from './routes/auth/sign-up'
 import { Route as AuthSignInRouteImport } from './routes/auth/sign-in'
@@ -26,6 +27,11 @@ const AboutRoute = AboutRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingIndexRoute = OnboardingIndexRouteImport.update({
+  id: '/onboarding/',
+  path: '/onboarding/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AccountIndexRoute = AccountIndexRouteImport.update({
@@ -66,6 +72,7 @@ export interface FileRoutesByFullPath {
   '/auth/sign-in': typeof AuthSignInRoute
   '/auth/sign-up': typeof AuthSignUpRoute
   '/account': typeof AccountIndexRoute
+  '/onboarding': typeof OnboardingIndexRoute
   '/account/children/$childId': typeof AccountChildrenChildIdRouteWithChildren
   '/account/children/new': typeof AccountChildrenNewRoute
   '/account/children/$childId/edit': typeof AccountChildrenChildIdEditRoute
@@ -76,6 +83,7 @@ export interface FileRoutesByTo {
   '/auth/sign-in': typeof AuthSignInRoute
   '/auth/sign-up': typeof AuthSignUpRoute
   '/account': typeof AccountIndexRoute
+  '/onboarding': typeof OnboardingIndexRoute
   '/account/children/$childId': typeof AccountChildrenChildIdRouteWithChildren
   '/account/children/new': typeof AccountChildrenNewRoute
   '/account/children/$childId/edit': typeof AccountChildrenChildIdEditRoute
@@ -87,6 +95,7 @@ export interface FileRoutesById {
   '/auth/sign-in': typeof AuthSignInRoute
   '/auth/sign-up': typeof AuthSignUpRoute
   '/account/': typeof AccountIndexRoute
+  '/onboarding/': typeof OnboardingIndexRoute
   '/account/children/$childId': typeof AccountChildrenChildIdRouteWithChildren
   '/account/children/new': typeof AccountChildrenNewRoute
   '/account/children/$childId/edit': typeof AccountChildrenChildIdEditRoute
@@ -99,6 +108,7 @@ export interface FileRouteTypes {
     | '/auth/sign-in'
     | '/auth/sign-up'
     | '/account'
+    | '/onboarding'
     | '/account/children/$childId'
     | '/account/children/new'
     | '/account/children/$childId/edit'
@@ -109,6 +119,7 @@ export interface FileRouteTypes {
     | '/auth/sign-in'
     | '/auth/sign-up'
     | '/account'
+    | '/onboarding'
     | '/account/children/$childId'
     | '/account/children/new'
     | '/account/children/$childId/edit'
@@ -119,6 +130,7 @@ export interface FileRouteTypes {
     | '/auth/sign-in'
     | '/auth/sign-up'
     | '/account/'
+    | '/onboarding/'
     | '/account/children/$childId'
     | '/account/children/new'
     | '/account/children/$childId/edit'
@@ -130,6 +142,7 @@ export interface RootRouteChildren {
   AuthSignInRoute: typeof AuthSignInRoute
   AuthSignUpRoute: typeof AuthSignUpRoute
   AccountIndexRoute: typeof AccountIndexRoute
+  OnboardingIndexRoute: typeof OnboardingIndexRoute
   AccountChildrenChildIdRoute: typeof AccountChildrenChildIdRouteWithChildren
   AccountChildrenNewRoute: typeof AccountChildrenNewRoute
 }
@@ -148,6 +161,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding/': {
+      id: '/onboarding/'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/account/': {
@@ -215,6 +235,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthSignInRoute: AuthSignInRoute,
   AuthSignUpRoute: AuthSignUpRoute,
   AccountIndexRoute: AccountIndexRoute,
+  OnboardingIndexRoute: OnboardingIndexRoute,
   AccountChildrenChildIdRoute: AccountChildrenChildIdRouteWithChildren,
   AccountChildrenNewRoute: AccountChildrenNewRoute,
 }

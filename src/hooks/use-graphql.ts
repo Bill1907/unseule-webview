@@ -33,8 +33,6 @@ const ME_QUERY = gql`
       email
       name
       phone
-      isActive
-      emailVerified
       createdAt
       updatedAt
       children {

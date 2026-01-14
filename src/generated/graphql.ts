@@ -16,18 +16,6 @@ export type Scalars = {
   DateTime: { input: string; output: string; }
 };
 
-export type ChangePasswordInput = {
-  currentPassword: Scalars['String']['input'];
-  newPassword: Scalars['String']['input'];
-};
-
-export type ChangePasswordPayload = {
-  __typename?: 'ChangePasswordPayload';
-  errorCode?: Maybe<Scalars['String']['output']>;
-  errorMessage?: Maybe<Scalars['String']['output']>;
-  success: Scalars['Boolean']['output'];
-};
-
 export type ChildType = {
   __typename?: 'ChildType';
   age: Scalars['Int']['output'];
@@ -62,17 +50,6 @@ export type CreateChildPayload = {
   success: Scalars['Boolean']['output'];
 };
 
-export type DeactivateAccountInput = {
-  password: Scalars['String']['input'];
-};
-
-export type DeactivateAccountPayload = {
-  __typename?: 'DeactivateAccountPayload';
-  errorCode?: Maybe<Scalars['String']['output']>;
-  errorMessage?: Maybe<Scalars['String']['output']>;
-  success: Scalars['Boolean']['output'];
-};
-
 export type DeleteChildPayload = {
   __typename?: 'DeleteChildPayload';
   errorCode?: Maybe<Scalars['String']['output']>;
@@ -98,9 +75,7 @@ export type DeviceType = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  changePassword: ChangePasswordPayload;
   createChild: CreateChildPayload;
-  deactivateAccount: DeactivateAccountPayload;
   deleteChild: DeleteChildPayload;
   echo: Scalars['String']['output'];
   registerDevice: RegisterDevicePayload;
@@ -110,18 +85,8 @@ export type Mutation = {
 };
 
 
-export type MutationChangePasswordArgs = {
-  input: ChangePasswordInput;
-};
-
-
 export type MutationCreateChildArgs = {
   input: CreateChildInput;
-};
-
-
-export type MutationDeactivateAccountArgs = {
-  input: DeactivateAccountInput;
 };
 
 
@@ -242,7 +207,6 @@ export type UpdateChildPayload = {
 };
 
 export type UpdateMeInput = {
-  name?: InputMaybe<Scalars['String']['input']>;
   phone?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -257,12 +221,10 @@ export type UpdateMePayload = {
 export type UserType = {
   __typename?: 'UserType';
   children: Array<ChildType>;
-  createdAt: Scalars['DateTime']['output'];
+  createdAt?: Maybe<Scalars['DateTime']['output']>;
   email: Scalars['String']['output'];
-  emailVerified: Scalars['Boolean']['output'];
   id: Scalars['String']['output'];
-  isActive: Scalars['Boolean']['output'];
-  name: Scalars['String']['output'];
+  name?: Maybe<Scalars['String']['output']>;
   phone?: Maybe<Scalars['String']['output']>;
   subscription?: Maybe<SubscriptionType>;
   updatedAt?: Maybe<Scalars['DateTime']['output']>;
@@ -309,7 +271,7 @@ export type UpdateMeMutationVariables = Exact<{
 }>;
 
 
-export type UpdateMeMutation = { __typename?: 'Mutation', updateMe: { __typename?: 'UpdateMePayload', success: boolean, errorCode?: string | null, errorMessage?: string | null, user?: { __typename?: 'UserType', id: string, name: string, phone?: string | null, email: string } | null } };
+export type UpdateMeMutation = { __typename?: 'Mutation', updateMe: { __typename?: 'UpdateMePayload', success: boolean, errorCode?: string | null, errorMessage?: string | null, user?: { __typename?: 'UserType', id: string, name?: string | null, phone?: string | null, email: string } | null } };
 
 export type MyDevicesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -326,7 +288,7 @@ export type DeviceQuery = { __typename?: 'Query', device?: { __typename?: 'Devic
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'UserType', id: string, email: string, name: string, phone?: string | null, isActive: boolean, emailVerified: boolean, createdAt: string, updatedAt?: string | null, children: Array<{ __typename?: 'ChildType', id: string, name: string, birthDate: string, gender?: string | null, age: number, isActive: boolean, device?: { __typename?: 'DeviceType', id: string, serialNumber: string, deviceType: string, connectionStatus: ConnectionStatus, batteryLevel?: number | null } | null }>, subscription?: { __typename?: 'SubscriptionType', id: string, planType: PlanType, status: SubscriptionStatus, startedAt: string, expiresAt?: string | null, autoRenew: boolean, isExpired: boolean } | null } | null };
+export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'UserType', id: string, email: string, name?: string | null, phone?: string | null, createdAt?: string | null, updatedAt?: string | null, children: Array<{ __typename?: 'ChildType', id: string, name: string, birthDate: string, gender?: string | null, age: number, isActive: boolean, device?: { __typename?: 'DeviceType', id: string, serialNumber: string, deviceType: string, connectionStatus: ConnectionStatus, batteryLevel?: number | null } | null }>, subscription?: { __typename?: 'SubscriptionType', id: string, planType: PlanType, status: SubscriptionStatus, startedAt: string, expiresAt?: string | null, autoRenew: boolean, isExpired: boolean } | null } | null };
 
 export type MyChildrenQueryVariables = Exact<{ [key: string]: never; }>;
 

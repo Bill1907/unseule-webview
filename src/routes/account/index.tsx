@@ -86,10 +86,7 @@ function AccountPage() {
         </CardHeader>
         <CardContent>
           <div className="flex gap-2">
-            {user.emailVerified && (
-              <Badge variant="secondary">이메일 인증됨</Badge>
-            )}
-            {user.isActive && <Badge variant="default">활성</Badge>}
+            <Badge variant="default">활성</Badge>
           </div>
         </CardContent>
       </Card>

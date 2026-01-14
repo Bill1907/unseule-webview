@@ -4,8 +4,6 @@ query Me {
     email
     name
     phone
-    isActive
-    emailVerified
     createdAt
     updatedAt
     children {

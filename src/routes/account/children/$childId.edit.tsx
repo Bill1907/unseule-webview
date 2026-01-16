@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { requireAuth } from "@/lib/auth";
+import { SignedIn, SignedOut, RedirectToSignIn } from "@clerk/clerk-react";
 import { useState, useEffect } from "react";
 import {
   Card,
@@ -23,9 +23,21 @@ import { ArrowLeft, Loader2 } from "lucide-react";
 import { useChildQuery, useUpdateChildMutation } from "@/hooks/use-graphql";
 
 export const Route = createFileRoute("/account/children/$childId/edit")({
-  beforeLoad: requireAuth,
   component: EditChildPage,
 });
+
+function EditChildPage() {
+  return (
+    <>
+      <SignedIn>
+        <EditChildContent />
+      </SignedIn>
+      <SignedOut>
+        <RedirectToSignIn />
+      </SignedOut>
+    </>
+  );
+}
 
 interface ChildFormData {
   name: string;
@@ -33,7 +45,7 @@ interface ChildFormData {
   gender: string;
 }
 
-function EditChildPage() {
+function EditChildContent() {
   const { childId } = Route.useParams();
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);

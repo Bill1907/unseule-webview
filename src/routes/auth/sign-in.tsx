@@ -1,16 +1,40 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { AuthView } from "@neondatabase/auth/react";
-import { requireGuest } from "@/lib/auth";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { SignIn, SignedIn, SignedOut } from "@clerk/clerk-react";
+import { useEffect } from "react";
 
 export const Route = createFileRoute("/auth/sign-in")({
-  beforeLoad: requireGuest,
   component: SignInPage,
 });
 
 function SignInPage() {
+  const navigate = useNavigate();
+
   return (
-    <main className="flex-1 flex items-center justify-center p-4">
-      <AuthView path="sign-in" />
-    </main>
+    <>
+      <SignedIn>
+        <RedirectToAccount navigate={navigate} />
+      </SignedIn>
+      <SignedOut>
+        <main className="flex-1 flex items-center justify-center p-4">
+          <SignIn
+            routing="path"
+            path="/auth/sign-in"
+            signUpUrl="/auth/sign-up"
+            forceRedirectUrl="/account"
+          />
+        </main>
+      </SignedOut>
+    </>
   );
+}
+
+function RedirectToAccount({
+  navigate,
+}: {
+  navigate: ReturnType<typeof useNavigate>;
+}) {
+  useEffect(() => {
+    navigate({ to: "/account" });
+  }, [navigate]);
+  return null;
 }

@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { requireAuth } from "@/lib/auth";
+import { SignedIn, SignedOut, RedirectToSignIn } from "@clerk/clerk-react";
 import { useMeQuery } from "@/hooks/use-graphql";
 import { ConnectionStatus } from "@/generated/graphql";
 import {
@@ -25,11 +25,23 @@ import {
 } from "lucide-react";
 
 export const Route = createFileRoute("/account/")({
-  beforeLoad: requireAuth,
   component: AccountPage,
 });
 
 function AccountPage() {
+  return (
+    <>
+      <SignedIn>
+        <AccountContent />
+      </SignedIn>
+      <SignedOut>
+        <RedirectToSignIn />
+      </SignedOut>
+    </>
+  );
+}
+
+function AccountContent() {
   const navigate = useNavigate();
   const { data, isLoading, error, refetch } = useMeQuery();
 

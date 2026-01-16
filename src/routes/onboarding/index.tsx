@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { requireAuth } from "@/lib/auth";
+import { SignedIn, SignedOut, RedirectToSignIn } from "@clerk/clerk-react";
 import { useState, useEffect } from "react";
 import { useForm } from "@tanstack/react-form";
 import {
@@ -42,13 +42,25 @@ import { useOnboardingStore } from "@/stores/onboarding.store";
 import type { WifiStatus } from "@/lib/flutter/types";
 
 export const Route = createFileRoute("/onboarding/")({
-  beforeLoad: requireAuth,
   component: OnboardingPage,
 });
 
+function OnboardingPage() {
+  return (
+    <>
+      <SignedIn>
+        <OnboardingContent />
+      </SignedIn>
+      <SignedOut>
+        <RedirectToSignIn />
+      </SignedOut>
+    </>
+  );
+}
+
 type Step = "welcome" | "profile" | "device" | "child" | "complete";
 
-function OnboardingPage() {
+function OnboardingContent() {
   const navigate = useNavigate();
   const [step, setStep] = useState<Step>("welcome");
   const [error, setError] = useState<string | null>(null);

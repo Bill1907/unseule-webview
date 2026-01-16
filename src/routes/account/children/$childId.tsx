@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { requireAuth } from "@/lib/auth";
+import { SignedIn, SignedOut, RedirectToSignIn } from "@clerk/clerk-react";
 import { useState } from "react";
 import { useChildQuery, useDeleteChildMutation } from "@/hooks/use-graphql";
 import { ConnectionStatus } from "@/generated/graphql";
@@ -36,11 +36,23 @@ import {
 import { flutter } from "@/lib/flutter/bridge";
 
 export const Route = createFileRoute("/account/children/$childId")({
-  beforeLoad: requireAuth,
   component: ChildDetailPage,
 });
 
 function ChildDetailPage() {
+  return (
+    <>
+      <SignedIn>
+        <ChildDetailContent />
+      </SignedIn>
+      <SignedOut>
+        <RedirectToSignIn />
+      </SignedOut>
+    </>
+  );
+}
+
+function ChildDetailContent() {
   const { childId } = Route.useParams();
   const navigate = useNavigate();
   const [deleteError, setDeleteError] = useState<string | null>(null);

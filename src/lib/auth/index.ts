@@ -1,3 +1,10 @@
-export { authClient, type Session, type User } from "./client";
+export { useAuth, useUser, useClerk } from "./client";
 export { AuthProvider } from "./provider";
-export { requireAuth, requireGuest } from "./guard";
+export {
+  SignedIn,
+  SignedOut,
+  RedirectToSignIn,
+  SignIn,
+  SignUp,
+  UserButton,
+} from "@clerk/clerk-react";

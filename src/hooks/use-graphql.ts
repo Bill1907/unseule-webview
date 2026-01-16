@@ -1,6 +1,12 @@
-import { useQuery, useMutation, type UseQueryOptions, type UseMutationOptions } from "@tanstack/react-query";
+import {
+  useQuery,
+  useMutation,
+  type UseQueryOptions,
+  type UseMutationOptions,
+  useQueryClient,
+} from "@tanstack/react-query";
+import { useAuth } from "@clerk/clerk-react";
 import { gql, createAuthGraphQLClient } from "@/lib/graphql/client";
-import { useQueryClient } from "@tanstack/react-query";
 import type {
   MeQuery,
   MyChildrenQuery,
@@ -258,10 +264,11 @@ const UPDATE_ME_MUTATION = gql`
 export function useMeQuery(
   options?: Omit<UseQueryOptions<MeQuery>, "queryKey" | "queryFn">
 ) {
+  const { getToken } = useAuth();
   return useQuery({
     queryKey: ["me"],
     queryFn: async () => {
-      const client = await createAuthGraphQLClient();
+      const client = await createAuthGraphQLClient(getToken);
       return client.request<MeQuery>(ME_QUERY);
     },
     ...options,
@@ -271,10 +278,11 @@ export function useMeQuery(
 export function useMyChildrenQuery(
   options?: Omit<UseQueryOptions<MyChildrenQuery>, "queryKey" | "queryFn">
 ) {
+  const { getToken } = useAuth();
   return useQuery({
     queryKey: ["myChildren"],
     queryFn: async () => {
-      const client = await createAuthGraphQLClient();
+      const client = await createAuthGraphQLClient(getToken);
       return client.request<MyChildrenQuery>(MY_CHILDREN_QUERY);
     },
     ...options,
@@ -285,10 +293,11 @@ export function useChildQuery(
   variables: ChildQueryVariables,
   options?: Omit<UseQueryOptions<ChildQuery>, "queryKey" | "queryFn">
 ) {
+  const { getToken } = useAuth();
   return useQuery({
     queryKey: ["child", variables.id],
     queryFn: async () => {
-      const client = await createAuthGraphQLClient();
+      const client = await createAuthGraphQLClient(getToken);
       return client.request<ChildQuery>(CHILD_QUERY, variables);
     },
     ...options,
@@ -298,10 +307,11 @@ export function useChildQuery(
 export function useMyDevicesQuery(
   options?: Omit<UseQueryOptions<MyDevicesQuery>, "queryKey" | "queryFn">
 ) {
+  const { getToken } = useAuth();
   return useQuery({
     queryKey: ["myDevices"],
     queryFn: async () => {
-      const client = await createAuthGraphQLClient();
+      const client = await createAuthGraphQLClient(getToken);
       return client.request<MyDevicesQuery>(MY_DEVICES_QUERY);
     },
     ...options,
@@ -312,10 +322,11 @@ export function useDeviceQuery(
   variables: DeviceQueryVariables,
   options?: Omit<UseQueryOptions<DeviceQuery>, "queryKey" | "queryFn">
 ) {
+  const { getToken } = useAuth();
   return useQuery({
     queryKey: ["device", variables.id],
     queryFn: async () => {
-      const client = await createAuthGraphQLClient();
+      const client = await createAuthGraphQLClient(getToken);
       return client.request<DeviceQuery>(DEVICE_QUERY, variables);
     },
     ...options,
@@ -325,10 +336,11 @@ export function useDeviceQuery(
 export function useMySubscriptionQuery(
   options?: Omit<UseQueryOptions<MySubscriptionQuery>, "queryKey" | "queryFn">
 ) {
+  const { getToken } = useAuth();
   return useQuery({
     queryKey: ["mySubscription"],
     queryFn: async () => {
-      const client = await createAuthGraphQLClient();
+      const client = await createAuthGraphQLClient(getToken);
       return client.request<MySubscriptionQuery>(MY_SUBSCRIPTION_QUERY);
     },
     ...options,
@@ -339,14 +351,22 @@ export function useMySubscriptionQuery(
 
 export function useRegisterDeviceMutation(
   options?: Omit<
-    UseMutationOptions<RegisterDeviceMutation, Error, RegisterDeviceMutationVariables>,
+    UseMutationOptions<
+      RegisterDeviceMutation,
+      Error,
+      RegisterDeviceMutationVariables
+    >,
     "mutationFn"
   >
 ) {
+  const { getToken } = useAuth();
   return useMutation({
     mutationFn: async (variables: RegisterDeviceMutationVariables) => {
-      const client = await createAuthGraphQLClient();
-      return client.request<RegisterDeviceMutation>(REGISTER_DEVICE_MUTATION, variables);
+      const client = await createAuthGraphQLClient(getToken);
+      return client.request<RegisterDeviceMutation>(
+        REGISTER_DEVICE_MUTATION,
+        variables
+      );
     },
     ...options,
   });
@@ -354,14 +374,22 @@ export function useRegisterDeviceMutation(
 
 export function useUnpairDeviceMutation(
   options?: Omit<
-    UseMutationOptions<UnpairDeviceMutation, Error, UnpairDeviceMutationVariables>,
+    UseMutationOptions<
+      UnpairDeviceMutation,
+      Error,
+      UnpairDeviceMutationVariables
+    >,
     "mutationFn"
   >
 ) {
+  const { getToken } = useAuth();
   return useMutation({
     mutationFn: async (variables: UnpairDeviceMutationVariables) => {
-      const client = await createAuthGraphQLClient();
-      return client.request<UnpairDeviceMutation>(UNPAIR_DEVICE_MUTATION, variables);
+      const client = await createAuthGraphQLClient(getToken);
+      return client.request<UnpairDeviceMutation>(
+        UNPAIR_DEVICE_MUTATION,
+        variables
+      );
     },
     ...options,
   });
@@ -369,15 +397,23 @@ export function useUnpairDeviceMutation(
 
 export function useCreateChildMutation(
   options?: Omit<
-    UseMutationOptions<CreateChildMutation, Error, CreateChildMutationVariables>,
+    UseMutationOptions<
+      CreateChildMutation,
+      Error,
+      CreateChildMutationVariables
+    >,
     "mutationFn"
   >
 ) {
+  const { getToken } = useAuth();
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (variables: CreateChildMutationVariables) => {
-      const client = await createAuthGraphQLClient();
-      return client.request<CreateChildMutation>(CREATE_CHILD_MUTATION, variables);
+      const client = await createAuthGraphQLClient(getToken);
+      return client.request<CreateChildMutation>(
+        CREATE_CHILD_MUTATION,
+        variables
+      );
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["me"] });
@@ -389,15 +425,23 @@ export function useCreateChildMutation(
 
 export function useUpdateChildMutation(
   options?: Omit<
-    UseMutationOptions<UpdateChildMutation, Error, UpdateChildMutationVariables>,
+    UseMutationOptions<
+      UpdateChildMutation,
+      Error,
+      UpdateChildMutationVariables
+    >,
     "mutationFn"
   >
 ) {
+  const { getToken } = useAuth();
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (variables: UpdateChildMutationVariables) => {
-      const client = await createAuthGraphQLClient();
-      return client.request<UpdateChildMutation>(UPDATE_CHILD_MUTATION, variables);
+      const client = await createAuthGraphQLClient(getToken);
+      return client.request<UpdateChildMutation>(
+        UPDATE_CHILD_MUTATION,
+        variables
+      );
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["me"] });
@@ -409,15 +453,23 @@ export function useUpdateChildMutation(
 
 export function useDeleteChildMutation(
   options?: Omit<
-    UseMutationOptions<DeleteChildMutation, Error, DeleteChildMutationVariables>,
+    UseMutationOptions<
+      DeleteChildMutation,
+      Error,
+      DeleteChildMutationVariables
+    >,
     "mutationFn"
   >
 ) {
+  const { getToken } = useAuth();
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (variables: DeleteChildMutationVariables) => {
-      const client = await createAuthGraphQLClient();
-      return client.request<DeleteChildMutation>(DELETE_CHILD_MUTATION, variables);
+      const client = await createAuthGraphQLClient(getToken);
+      return client.request<DeleteChildMutation>(
+        DELETE_CHILD_MUTATION,
+        variables
+      );
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["me"] });
@@ -433,10 +485,11 @@ export function useUpdateMeMutation(
     "mutationFn"
   >
 ) {
+  const { getToken } = useAuth();
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (variables: UpdateMeMutationVariables) => {
-      const client = await createAuthGraphQLClient();
+      const client = await createAuthGraphQLClient(getToken);
       return client.request<UpdateMeMutation>(UPDATE_ME_MUTATION, variables);
     },
     onSuccess: () => {

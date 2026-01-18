@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { SignedIn, SignedOut, RedirectToSignIn } from "@clerk/clerk-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useChildQuery, useDeleteChildMutation } from "@/hooks/use-graphql";
 import { ConnectionStatus } from "@/generated/graphql";
 import {
@@ -32,8 +32,10 @@ import {
   Bluetooth,
   Pencil,
   Trash2,
+  Signal,
 } from "lucide-react";
 import { flutter } from "@/lib/flutter/bridge";
+import { useBluetoothStore } from "@/stores/bluetooth.store";
 
 export const Route = createFileRoute("/account/children/$childId")({
   component: ChildDetailPage,
@@ -235,21 +237,7 @@ function ChildDetailContent() {
               )}
             </div>
           ) : (
-            <div className="flex flex-col items-center text-center py-6">
-              <div className="size-12 rounded-full bg-muted flex items-center justify-center mb-3">
-                <Bluetooth className="size-6 text-muted-foreground" />
-              </div>
-              <p className="text-muted-foreground mb-3">
-                연결된 인형이 없습니다.
-              </p>
-              <Button
-                variant="outline"
-                onClick={() => flutter.bluetooth.startScan()}
-              >
-                <Bluetooth className="size-4 mr-2" />
-                인형 연결하기
-              </Button>
-            </div>
+            <DeviceConnectSection onDeviceConnected={refetch} />
           )}
         </CardContent>
       </Card>
@@ -287,4 +275,142 @@ function formatConnectionStatus(status: ConnectionStatus): string {
     default:
       return "알 수 없음";
   }
+}
+
+function DeviceConnectSection({
+  onDeviceConnected,
+}: {
+  onDeviceConnected: () => void;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [isConnecting, setIsConnecting] = useState(false);
+  const { isScanning, discoveredDevices, connectedDevice, reset } =
+    useBluetoothStore();
+
+  // 다이얼로그 열릴 때 스캔 시작
+  useEffect(() => {
+    if (isOpen) {
+      flutter.bluetooth.startScan();
+    }
+    return () => {
+      if (isOpen) {
+        flutter.bluetooth.stopScan();
+        reset();
+      }
+    };
+  }, [isOpen, reset]);
+
+  // 디바이스 연결 완료 감지
+  useEffect(() => {
+    if (connectedDevice && isConnecting) {
+      setIsConnecting(false);
+      setIsOpen(false);
+      onDeviceConnected();
+    }
+  }, [connectedDevice, isConnecting, onDeviceConnected]);
+
+  const handleConnect = (deviceId: string) => {
+    flutter.bluetooth.stopScan();
+    flutter.bluetooth.connect(deviceId);
+    setIsConnecting(true);
+  };
+
+  const handleRescan = () => {
+    reset();
+    flutter.bluetooth.startScan();
+  };
+
+  return (
+    <div className="flex flex-col items-center text-center py-6">
+      <div className="size-12 rounded-full bg-muted flex items-center justify-center mb-3">
+        <Bluetooth className="size-6 text-muted-foreground" />
+      </div>
+      <p className="text-muted-foreground mb-3">연결된 인형이 없습니다.</p>
+      <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
+        <AlertDialogTrigger
+          render={
+            <Button variant="outline">
+              <Bluetooth className="size-4 mr-2" />
+              인형 연결하기
+            </Button>
+          }
+        />
+        <AlertDialogContent className="max-w-sm">
+          <AlertDialogHeader>
+            <AlertDialogTitle>디바이스 검색</AlertDialogTitle>
+            <AlertDialogDescription>
+              주변의 윤슬 인형을 찾고 있습니다.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+
+          <div className="min-h-[200px] max-h-[300px] overflow-y-auto">
+            {isConnecting ? (
+              <div className="flex flex-col items-center justify-center py-8">
+                <Loader2 className="size-8 animate-spin text-primary mb-3" />
+                <p className="text-sm text-muted-foreground">연결 중...</p>
+              </div>
+            ) : isScanning && discoveredDevices.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-8">
+                <Loader2 className="size-8 animate-spin text-primary mb-3" />
+                <p className="text-sm text-muted-foreground">검색 중...</p>
+              </div>
+            ) : discoveredDevices.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-8 text-center">
+                <Bluetooth className="size-10 text-muted-foreground/50 mb-3" />
+                <p className="text-sm text-muted-foreground mb-3">
+                  발견된 디바이스가 없습니다.
+                </p>
+                <Button variant="outline" size="sm" onClick={handleRescan}>
+                  <RefreshCw className="size-4 mr-2" />
+                  다시 검색
+                </Button>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {isScanning && (
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
+                    <Loader2 className="size-3 animate-spin" />
+                    검색 중...
+                  </div>
+                )}
+                {discoveredDevices.map((device) => (
+                  <div
+                    key={device.id}
+                    className="flex items-center justify-between p-3 border rounded-lg"
+                  >
+                    <div className="flex items-center gap-3">
+                      <Signal className="size-4 text-muted-foreground" />
+                      <div className="text-left">
+                        <p className="text-sm font-medium">{device.name}</p>
+                        {device.rssi && (
+                          <p className="text-xs text-muted-foreground">
+                            신호: {device.rssi}dBm
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                    <Button size="sm" onClick={() => handleConnect(device.id)}>
+                      연결
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setIsOpen(false)}>
+              닫기
+            </AlertDialogCancel>
+            {discoveredDevices.length > 0 && !isConnecting && (
+              <Button variant="outline" onClick={handleRescan}>
+                <RefreshCw className="size-4 mr-2" />
+                다시 검색
+              </Button>
+            )}
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
+  );
 }
